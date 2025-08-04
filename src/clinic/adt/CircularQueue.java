@@ -1,3 +1,5 @@
+package clinic.adt;
+
 public class CircularQueue<T> implements QueueADT<T> {
     private T[] elements;
     private int front, rear, count, capacity;
@@ -24,7 +26,7 @@ public class CircularQueue<T> implements QueueADT<T> {
             throw new IllegalStateException("Queue is empty");
         }
         T data = elements[front];
-        elements[front] = null; // avoid memory leak
+        elements[front] = null; 
         front = (front + 1) % capacity;
         count--;
         return data;

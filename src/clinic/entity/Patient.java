@@ -1,3 +1,5 @@
+package clinic.entity;
+
 public class Patient {
     private String patientId;
     private String name;
