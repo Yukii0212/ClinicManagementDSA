@@ -1,6 +1,7 @@
 package clinic.boundary;
 
 import clinic.control.ConsultationControl;
+import clinic.control.PatientControl;
 import clinic.entity.Consultation;
 import clinic.entity.Patient;
 import clinic.entity.Doctor;
@@ -12,7 +13,11 @@ public class ConsultationUI {
     private final Scanner sc = new Scanner(System.in);
 
     public ConsultationUI() {
-        control = new ConsultationControl(20); // capacity
+        control = new ConsultationControl(20); 
+    }
+
+    public ConsultationUI(ConsultationControl controller) {
+        this.controller = controller;
     }
 
     public void run(Patient[] patients, Doctor[] doctors) {

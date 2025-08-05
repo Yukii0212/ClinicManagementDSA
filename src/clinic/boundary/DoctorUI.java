@@ -1,6 +1,7 @@
 package clinic.boundary;
 
 import clinic.control.DoctorControl;
+import clinic.control.PatientControl;
 import clinic.entity.Doctor;
 
 import java.util.Scanner;
@@ -11,6 +12,10 @@ public class DoctorUI {
 
     public DoctorUI() {
         control = new DoctorControl(20); // arbitrary capacity
+    }
+
+    public DoctorUI(DoctorControl controller) {
+        this.controller = controller;
     }
 
     public void run() {

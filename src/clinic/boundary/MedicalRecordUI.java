@@ -1,6 +1,7 @@
 package clinic.boundary;
 
 import clinic.control.MedicalRecordControl;
+import clinic.control.PatientControl;
 import clinic.entity.MedicalRecord;
 import clinic.entity.Patient;
 import clinic.entity.Doctor;
@@ -13,6 +14,10 @@ public class MedicalRecordUI {
 
     public MedicalRecordUI() {
         control = new MedicalRecordControl(50); // arbitrary
+    }
+
+    public MedicalRecordUI(MedicalRecordControl controller) {
+        this.controller = controller;
     }
 
     public void run(Patient[] patients, Doctor[] doctors) {
