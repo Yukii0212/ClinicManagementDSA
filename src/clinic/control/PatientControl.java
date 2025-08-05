@@ -45,6 +45,21 @@ public class PatientControl {
         }
     }
 
+    public Patient[] getAllPatients() {
+        Patient[] copy = new Patient[patientQueue.size()];
+        CircularQueue<Patient> temp = new CircularQueue<>(patientQueue.size());
+        for (int i = 0; i < copy.length; i++) {
+            Patient p = patientQueue.dequeue();
+            copy[i] = p;
+            temp.enqueue(p);
+        }
+        while (!temp.isEmpty()) {
+            patientQueue.enqueue(temp.dequeue());
+        }
+        return copy;
+    }
+
+
     public int totalPatients() {
         return patientQueue.size();
     }

@@ -2,6 +2,7 @@ package clinic.boundary;
 
 import clinic.control.PatientControl;
 import clinic.entity.Patient;
+import static clinic.util.ConsoleUtil.*;
 
 import java.util.Scanner;
 
@@ -16,6 +17,7 @@ public class PatientUI {
     public void run() {
         int choice;
         do {
+            clearScreen();
             System.out.println("\n--- Patient Management ---");
             System.out.println("1. Register Patient");
             System.out.println("2. Consult Next Patient");
@@ -26,9 +28,18 @@ public class PatientUI {
             sc.nextLine(); 
 
             switch (choice) {
-                case 1 -> registerPatient();
-                case 2 -> consultPatient();
-                case 3 -> controller.showAllPatients();
+                case 1 -> {
+                    registerPatient();
+                    pause();
+                }
+                case 2 -> {
+                    consultPatient();
+                    pause();
+                }
+                case 3 -> {
+                    controller.showAllPatients();
+                    pause();
+                }
                 case 0 -> System.out.println("Returning to main menu...");
                 default -> System.out.println("Invalid choice.");
             }

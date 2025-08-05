@@ -1,10 +1,10 @@
 package clinic.boundary;
 
 import clinic.control.ConsultationControl;
-import clinic.control.PatientControl;
 import clinic.entity.Consultation;
 import clinic.entity.Patient;
 import clinic.entity.Doctor;
+import static clinic.util.ConsoleUtil.*;
 
 import java.util.Scanner;
 
@@ -16,13 +16,10 @@ public class ConsultationUI {
         control = new ConsultationControl(20); 
     }
 
-    public ConsultationUI(ConsultationControl controller) {
-        this.controller = controller;
-    }
-
     public void run(Patient[] patients, Doctor[] doctors) {
         int choice;
         do {
+            clearScreen();
             System.out.println("\n--- Consultation Management ---");
             System.out.println("1. Schedule Consultation");
             System.out.println("2. View All Consultations");
@@ -31,8 +28,14 @@ public class ConsultationUI {
             choice = sc.nextInt(); sc.nextLine();
 
             switch (choice) {
-                case 1 -> schedule(patients, doctors);
-                case 2 -> viewAll();
+                case 1 -> {
+                    schedule(patients, doctors);
+                    pause();
+                }
+                case 2 -> {
+                    viewAll();
+                    pause();
+                }
                 case 0 -> System.out.println("Back to main menu...");
                 default -> System.out.println("Invalid.");
             }

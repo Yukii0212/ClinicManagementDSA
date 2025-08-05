@@ -1,10 +1,10 @@
 package clinic.boundary;
 
 import clinic.control.MedicalRecordControl;
-import clinic.control.PatientControl;
 import clinic.entity.MedicalRecord;
 import clinic.entity.Patient;
 import clinic.entity.Doctor;
+import static clinic.util.ConsoleUtil.*;
 
 import java.util.Scanner;
 
@@ -16,13 +16,10 @@ public class MedicalRecordUI {
         control = new MedicalRecordControl(50); // arbitrary
     }
 
-    public MedicalRecordUI(MedicalRecordControl controller) {
-        this.controller = controller;
-    }
-
     public void run(Patient[] patients, Doctor[] doctors) {
         int choice;
         do {
+            clearScreen();
             System.out.println("\n--- Medical Record Management ---");
             System.out.println("1. Add Record");
             System.out.println("2. View All Records");
@@ -31,8 +28,14 @@ public class MedicalRecordUI {
             choice = sc.nextInt(); sc.nextLine();
 
             switch (choice) {
-                case 1 -> add(patients, doctors);
-                case 2 -> viewAll();
+                case 1 -> {
+                    add(patients, doctors);
+                    pause();
+                }
+                case 2 -> {
+                    viewAll();
+                    pause();
+                }
                 case 0 -> System.out.println("Returning to main...");
                 default -> System.out.println("Invalid.");
             }

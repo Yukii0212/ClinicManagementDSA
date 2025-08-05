@@ -18,11 +18,9 @@ public class DoctorControl {
     }
 
     public Doctor[] getAllDoctors() {
-        Doctor[] copy = new Doctor[count];
-        for (int i = 0; i < count; i++) {
-            copy[i] = doctors[i];
-        }
-        return copy;
+        Doctor[] result = new Doctor[count];
+        System.arraycopy(doctors, 0, result, 0, count);
+        return result;
     }
 
     public Doctor[] searchBySpecialization(String specialization) {

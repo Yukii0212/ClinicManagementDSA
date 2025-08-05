@@ -1,8 +1,8 @@
 package clinic.boundary;
 
 import clinic.control.DoctorControl;
-import clinic.control.PatientControl;
 import clinic.entity.Doctor;
+import static clinic.util.ConsoleUtil.*;
 
 import java.util.Scanner;
 
@@ -14,13 +14,10 @@ public class DoctorUI {
         control = new DoctorControl(20); // arbitrary capacity
     }
 
-    public DoctorUI(DoctorControl controller) {
-        this.controller = controller;
-    }
-
     public void run() {
         int choice;
         do {
+            clearScreen();
             System.out.println("\n--- Doctor Management ---");
             System.out.println("1. Add Doctor");
             System.out.println("2. View All Doctors");
@@ -31,9 +28,18 @@ public class DoctorUI {
             sc.nextLine();
 
             switch (choice) {
-                case 1 -> addDoctor();
-                case 2 -> showAll();
-                case 3 -> searchSpecialization();
+                case 1 -> {
+                    addDoctor();
+                    pause();
+                }
+                case 2 -> {
+                    showAll();
+                    pause();
+                }
+                case 3 -> {
+                    searchSpecialization();
+                    pause();
+                }
                 case 0 -> System.out.println("Returning to main menu...");
                 default -> System.out.println("Invalid.");
             }

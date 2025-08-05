@@ -4,6 +4,8 @@ import clinic.boundary.*;
 import clinic.control.*;
 import clinic.entity.*;
 
+import static clinic.util.ConsoleUtil.clearScreen;
+
 import java.util.Scanner;
 
 public class Main {
@@ -17,6 +19,7 @@ public class Main {
     public static void main(String[] args) {
         int choice;
         do {
+            clearScreen();
             System.out.println("\n=== Clinic Management System ===");
             System.out.println("1. Patient Management");
             System.out.println("2. Doctor Management");
@@ -27,13 +30,13 @@ public class Main {
             choice = sc.nextInt(); sc.nextLine();
 
             switch (choice) {
-                case 1 -> new PatientUI(patientControl).run();
-                case 2 -> new DoctorUI(doctorControl).run();
-                case 3 -> new ConsultationUI(consultationControl).run(
+                case 1 -> new PatientUI().run();
+                case 2 -> new DoctorUI().run();
+                case 3 -> new ConsultationUI().run(
                         patientControl.getAllPatients(),
                         doctorControl.getAllDoctors()
                 );
-                case 4 -> new MedicalRecordUI(medicalRecordControl).run(
+                case 4 -> new MedicalRecordUI().run(
                         patientControl.getAllPatients(),
                         doctorControl.getAllDoctors()
                 );
