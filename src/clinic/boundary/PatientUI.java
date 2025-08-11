@@ -39,6 +39,96 @@ public class PatientUI {
 
     private void registerPatient() {
         clearScreen();
+        System.out.println("--- Register / Re-Enqueue Patient ---");
+        System.out.println("1. Register new patient");
+        System.out.println("2. Search and re-add existing patient to queue");
+        System.out.print("Select option (or 'X' to cancel): ");
+        String choiceInput = sc.nextLine();
+        if (choiceInput.equalsIgnoreCase("X")) return;
+
+        int choice;
+        try {
+            choice = Integer.parseInt(choiceInput);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid choice.");
+            pause();
+            return;
+        }
+
+        if (choice == 2) {
+            // Search existing patients
+            System.out.print("Search by (1) IC or (2) Name: ");
+            String searchInput = sc.nextLine();
+            if (searchInput.equalsIgnoreCase("X")) return;
+
+            int searchChoice;
+            try {
+                searchChoice = Integer.parseInt(searchInput);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid choice.");
+                pause();
+                return;
+            }
+
+            Patient found = null;
+
+            if (searchChoice == 1) {
+                System.out.print("Enter IC: ");
+                String icSearch = sc.nextLine();
+                if (icSearch.equalsIgnoreCase("X")) return;
+                found = controller.searchByIC(icSearch);
+
+            } else if (searchChoice == 2) {
+                System.out.print("Enter Name: ");
+                String nameSearch = sc.nextLine();
+                if (nameSearch.equalsIgnoreCase("X")) return;
+
+                Patient[] matches = controller.searchByName(nameSearch);
+                if (matches.length == 0) {
+                    System.out.println("No matching patient found.");
+                    pause();
+                    return;
+                } else if (matches.length > 1) {
+                    System.out.println("Multiple matches found:");
+                    for (int i = 0; i < matches.length; i++) {
+                        System.out.printf("%d. %s (IC: %s, ID: %s)\n",
+                                i + 1, matches[i].getName(),
+                                matches[i].getIdentificationCard(),
+                                matches[i].getPatientId());
+                    }
+                    int pick = InputUtil.getInt(sc, "Select: ") - 1;
+                    sc.nextLine();
+                    if (pick >= 0 && pick < matches.length) {
+                        found = matches[pick];
+                    }
+                } else {
+                    found = matches[0];
+                }
+            }
+
+            if (found != null) {
+                System.out.println("Patient found:");
+                System.out.println(found);
+                System.out.print("Add to queue? (Y/N): ");
+                String confirm = sc.nextLine();
+                if (confirm.equalsIgnoreCase("Y")) {
+                    boolean ok = controller.enqueueExisting(found);
+                    System.out.println(ok ? "Added to queue." : "Patient already in queue or queue full.");
+                }
+            } else {
+                System.out.println("No matching patient found.");
+            }
+            pause();
+            return;
+        }
+
+        if (choice != 1) {
+            System.out.println("Invalid choice.");
+            pause();
+            return;
+        }
+
+        // Original NEW patient registration flow
         System.out.println("Enter 'X' at any prompt to cancel.");
         System.out.print("Identification Card (IC): ");
         String ic = sc.nextLine();
@@ -66,6 +156,7 @@ public class PatientUI {
         boolean ok = controller.addPatient(ic, name, age, gender, phone, illness);
         System.out.println(ok ? "Patient registered successfully." : "Failed to register patient (maybe queue full or IC exists).");
     }
+
 
     private void viewQueue() {
         clearScreen();

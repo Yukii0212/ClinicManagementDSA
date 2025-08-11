@@ -37,4 +37,14 @@ public class FileUtil {
             System.out.println("Error writing to " + filename);
         }
     }
+
+    public static void writeFile(String filename, String content) {
+        try (java.io.BufferedWriter bw = new java.io.BufferedWriter(new java.io.FileWriter(filename, false))) {
+            bw.write(content == null ? "" : content);
+        } catch (java.io.IOException e) {
+            System.out.println("Error writing " + filename + ": " + e.getMessage());
+        }
+    }
+
+
 }

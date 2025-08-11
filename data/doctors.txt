@@ -1,3 +1,2 @@
-D001,971208120855,Dr Wesley,Heart,Weekdays,Morning
-D002,931231130855,Dr Gabriel,Hands,Weekend,Morning
-D003,981220130854,Dr Elisha,Eyes,Everyday,Both
+D001,000212-12-0857,Dr Douglas,Eyes,Monday,Morning
+D002,0123123213,Dr Jefther,Nose,Thursday,Morning

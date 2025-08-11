@@ -27,6 +27,9 @@ public class ConsultationControl {
                 diagnosis,
                 treatment
         );
+
+        patientControl.removeFromQueueFile(p.getPatientId());
+
         System.out.println("Consultation recorded for patient: " + p.getName());
     }
 }
