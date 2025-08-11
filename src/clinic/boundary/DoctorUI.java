@@ -49,6 +49,7 @@ public class DoctorUI {
     }
 
     private void addDoctor() {
+        clearScreen();
         System.out.println("Enter 'X' at any prompt to cancel.");
 
         System.out.print("Identification Card (IC): ");
@@ -76,17 +77,28 @@ public class DoctorUI {
     }
 
     private void showAll() {
+        clearScreen();
         Doctor[] docs = control.getAllDoctors();
         if (docs.length == 0) {
             System.out.println("No doctors available.");
             return;
         }
+        System.out.printf("%-5s %-15s %-20s %-20s %-12s %-10s%n",
+                "ID", "IC", "Name", "Specialization", "Duty Day", "Shift");
+        System.out.println("-------------------------------------------------------------------------------------");
         for (Doctor d : docs) {
-            System.out.println(d);
+            System.out.printf("%-5s %-15s %-20s %-20s %-12s %-10s%n",
+                    d.getDoctorId(),
+                    d.getIdentificationCard(),
+                    d.getName(),
+                    d.getSpecialization(),
+                    d.getDutyDay(),
+                    d.getShiftTime());
         }
     }
 
     private void searchSpecialization() {
+        clearScreen();
         System.out.print("Enter specialization: ");
         String spec = sc.nextLine();
         Doctor[] result = control.searchBySpecialization(spec);

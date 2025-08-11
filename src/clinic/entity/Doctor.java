@@ -17,7 +17,6 @@ public class Doctor {
         this.shiftTime = shiftTime;
     }
 
-
     public String getDoctorId() { return doctorId; }
     public String getIdentificationCard() { return identificationCard; }
     public String getName() { return name; }

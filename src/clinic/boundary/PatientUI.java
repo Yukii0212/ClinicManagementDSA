@@ -38,6 +38,7 @@ public class PatientUI {
     }
 
     private void registerPatient() {
+        clearScreen();
         System.out.println("Enter 'X' at any prompt to cancel.");
         System.out.print("Identification Card (IC): ");
         String ic = sc.nextLine();
@@ -67,16 +68,28 @@ public class PatientUI {
     }
 
     private void viewQueue() {
+        clearScreen();
         Patient[] list = controller.getAllPatients();
         if (list.length == 0) {
             System.out.println("No patients in queue.");
             return;
         }
         System.out.println("Patients in queue:");
-        for (int i = 0; i < list.length; i++) {
-            System.out.printf("%d. %s\n", i + 1, list[i]);
+        System.out.printf("%-5s %-15s %-20s %-3s %-6s %-12s %s%n",
+                "ID", "IC", "Name", "Age", "Gender", "Phone", "Illness");
+        System.out.println("-------------------------------------------------------------------------------------");
+        for (Patient p : list) {
+            System.out.printf("%-5s %-15s %-20s %-3d %-6s %-12s %s%n",
+                    p.getPatientId(),
+                    p.getIdentificationCard(),
+                    p.getName(),
+                    p.getAge(),
+                    p.getGender(),
+                    p.getPhone(),
+                    p.getIllnessDescription());
         }
     }
+
 
     private void viewPreviouslyRegistered() {
         clearScreen();

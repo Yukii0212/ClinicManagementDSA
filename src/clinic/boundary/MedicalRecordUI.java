@@ -43,55 +43,63 @@ public class MedicalRecordUI {
     }
 
     private void addRecord() {
-        System.out.print("Patient ID (e.g. P001): ");
-        String pid = sc.nextLine();
+        clearScreen();
+        System.out.println("Enter 'X' at any prompt to cancel.");
 
-        System.out.print("Doctor ID (e.g. D001): ");
-        String did = sc.nextLine();
+        System.out.print("Patient ID: ");
+        String patientId = sc.nextLine();
+        if (patientId.equalsIgnoreCase("X")) return;
+
+        System.out.print("Doctor ID: ");
+        String doctorId = sc.nextLine();
+        if (doctorId.equalsIgnoreCase("X")) return;
 
         System.out.print("Date (YYYY-MM-DD): ");
         String date = sc.nextLine();
+        if (date.equalsIgnoreCase("X")) return;
 
         System.out.print("Diagnosis: ");
         String diagnosis = sc.nextLine();
+        if (diagnosis.equalsIgnoreCase("X")) return;
 
         System.out.print("Treatment: ");
         String treatment = sc.nextLine();
+        if (treatment.equalsIgnoreCase("X")) return;
 
-        boolean ok = control.addRecord(pid, did, date, diagnosis, treatment);
-        System.out.println(ok ? "Record saved." : "Saving failed (maybe capacity).");
+        boolean ok = control.addRecord(patientId, doctorId, date, diagnosis, treatment);
+        System.out.println(ok ? "Medical record added successfully." : "Failed to add record.");
     }
 
-private void viewAll() {
-    clearScreen();
-    MedicalRecord[] recs = control.getAllRecords();
-    if (recs.length == 0) {
-        System.out.println("No medical records found.");
-        return;
-    }
+    private void viewAll() {
+        clearScreen();
+        MedicalRecord[] recs = control.getAllRecords();
+        if (recs.length == 0) {
+            System.out.println("No medical records found.");
+            return;
+        }
 
-    System.out.println("=== Medical Records ===");
-    System.out.printf("%-8s %-15s %-15s %-12s %-20s %-20s%n",
-            "Rec ID", "Patient", "Doctor", "Date", "Diagnosis", "Treatment");
-    System.out.println("-------------------------------------------------------------------------------------------");
-
-    for (MedicalRecord r : recs) {
-        String patientName = "Unknown";
-        String doctorName = "Unknown";
-
-        Patient p = patientControl.findById(r.getPatientId());
-        if (p != null) patientName = p.getName();
-
-        Doctor d = doctorControl.findById(r.getDoctorId());
-        if (d != null) doctorName = d.getName();
-
+        System.out.println("=== Medical Records ===");
         System.out.printf("%-8s %-15s %-15s %-12s %-20s %-20s%n",
-                r.getRecordId(),
-                patientName + " (" + r.getPatientId() + ")",
-                doctorName + " (" + r.getDoctorId() + ")",
-                r.getDate(),
-                r.getDiagnosis(),
-                r.getTreatment());
+                "Rec ID", "Patient", "Doctor", "Date", "Diagnosis", "Treatment");
+        System.out.println("-------------------------------------------------------------------------------------------");
+
+        for (MedicalRecord r : recs) {
+            String patientName = "Unknown";
+            String doctorName = "Unknown";
+
+            Patient p = patientControl.findById(r.getPatientId());
+            if (p != null) patientName = p.getName();
+
+            Doctor d = doctorControl.findById(r.getDoctorId());
+            if (d != null) doctorName = d.getName();
+
+            System.out.printf("%-8s %-15s %-15s %-12s %-20s %-20s%n",
+                    r.getRecordId(),
+                    patientName + " (" + r.getPatientId() + ")",
+                    doctorName + " (" + r.getDoctorId() + ")",
+                    r.getDate(),
+                    r.getDiagnosis(),
+                    r.getTreatment());
+        }
     }
-}
 }

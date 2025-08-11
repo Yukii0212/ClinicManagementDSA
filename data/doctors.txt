@@ -1,1 +1,3 @@
-D001,000212120856,Yuki Lai,Eyes,Monday,Morning
+D001,971208120855,Dr Wesley,Heart,Weekdays,Morning
+D002,931231130855,Dr Gabriel,Hands,Weekend,Morning
+D003,981220130854,Dr Elisha,Eyes,Everyday,Both
