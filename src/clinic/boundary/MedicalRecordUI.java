@@ -1,86 +1,105 @@
 package clinic.boundary;
 
+import clinic.control.DoctorControl;
 import clinic.control.MedicalRecordControl;
+import clinic.control.PatientControl;
+import clinic.entity.Doctor;
 import clinic.entity.MedicalRecord;
 import clinic.entity.Patient;
-import clinic.entity.Doctor;
 import static clinic.util.ConsoleUtil.*;
-
+import clinic.util.InputUtil;
 import java.util.Scanner;
 
 public class MedicalRecordUI {
     private final MedicalRecordControl control;
+    private final PatientControl patientControl;
+    private final DoctorControl doctorControl;
     private final Scanner sc = new Scanner(System.in);
 
-    public MedicalRecordUI() {
-        control = new MedicalRecordControl(50); // arbitrary
+    public MedicalRecordUI(MedicalRecordControl control, PatientControl patientControl, DoctorControl doctorControl) {
+        this.control = control;
+        this.patientControl = patientControl;
+        this.doctorControl = doctorControl;
     }
 
-    public void run(Patient[] patients, Doctor[] doctors) {
+    public void run() {
         int choice;
         do {
             clearScreen();
             System.out.println("\n--- Medical Record Management ---");
-            System.out.println("1. Add Record");
+            System.out.println("1. Add Record (manual)");
             System.out.println("2. View All Records");
             System.out.println("0. Back");
-            System.out.print("Enter option: ");
-            choice = sc.nextInt(); sc.nextLine();
+            choice = InputUtil.getInt(sc, "Enter option: ");
+            sc.nextLine();
 
             switch (choice) {
-                case 1 -> {
-                    add(patients, doctors);
-                    pause();
-                }
-                case 2 -> {
-                    viewAll();
-                    pause();
-                }
-                case 0 -> System.out.println("Returning to main...");
-                default -> System.out.println("Invalid.");
+                case 1 -> { addRecord(); pause(); }
+                case 2 -> { viewAll(); pause(); }
+                case 0 -> System.out.println("Returning to main..."); 
+                default -> { System.out.println("Invalid."); pause(); }
             }
         } while (choice != 0);
     }
 
-    private void add(Patient[] patients, Doctor[] doctors) {
-        if (patients.length == 0 || doctors.length == 0) {
-            System.out.println("Need at least 1 patient and 1 doctor.");
-            return;
-        }
+    private void addRecord() {
+        clearScreen();
+        System.out.println("Enter 'X' at any prompt to cancel.");
 
-        System.out.println("Select Patient:");
-        for (int i = 0; i < patients.length; i++) {
-            System.out.printf("%d. %s\n", i + 1, patients[i].getName());
-        }
-        int pIndex = sc.nextInt() - 1; sc.nextLine();
+        System.out.print("Patient ID: ");
+        String patientId = sc.nextLine();
+        if (patientId.equalsIgnoreCase("X")) return;
 
-        System.out.println("Select Doctor:");
-        for (int i = 0; i < doctors.length; i++) {
-            System.out.printf("%d. %s (%s)\n", i + 1, doctors[i].getName(), doctors[i].getSpecialization());
-        }
-        int dIndex = sc.nextInt() - 1; sc.nextLine();
+        System.out.print("Doctor ID: ");
+        String doctorId = sc.nextLine();
+        if (doctorId.equalsIgnoreCase("X")) return;
 
-        System.out.print("Record ID: ");
-        String id = sc.nextLine();
-        System.out.print("Diagnosis: ");
-        String diag = sc.nextLine();
-        System.out.print("Treatment: ");
-        String treat = sc.nextLine();
-        System.out.print("Date: ");
+        System.out.print("Date (YYYY-MM-DD): ");
         String date = sc.nextLine();
+        if (date.equalsIgnoreCase("X")) return;
 
-        boolean ok = control.addRecord(id, patients[pIndex], doctors[dIndex], diag, treat, date);
-        System.out.println(ok ? "Record saved." : "Storage full.");
+        System.out.print("Diagnosis: ");
+        String diagnosis = sc.nextLine();
+        if (diagnosis.equalsIgnoreCase("X")) return;
+
+        System.out.print("Treatment: ");
+        String treatment = sc.nextLine();
+        if (treatment.equalsIgnoreCase("X")) return;
+
+        boolean ok = control.addRecord(patientId, doctorId, date, diagnosis, treatment);
+        System.out.println(ok ? "Medical record added successfully." : "Failed to add record.");
     }
 
     private void viewAll() {
-        MedicalRecord[] records = control.getAllRecords();
-        if (records.length == 0) {
-            System.out.println("No records found.");
-        } else {
-            for (MedicalRecord r : records) {
-                System.out.println("\n" + r);
-            }
+        clearScreen();
+        MedicalRecord[] recs = control.getAllRecords();
+        if (recs.length == 0) {
+            System.out.println("No medical records found.");
+            return;
         }
+
+        System.out.println("=== Medical Records ===");
+        
+        for (MedicalRecord r : recs) {
+            String patientName = "Unknown";
+            String doctorName = "Unknown";
+
+            Patient p = patientControl.findById(r.getPatientId());
+            if (p != null) patientName = p.getName();
+
+            Doctor d = doctorControl.findById(r.getDoctorId());
+            if (d != null) doctorName = d.getName();
+
+            System.out.println("--------------------------------------------------");
+            System.out.println("Rec ID     : " + r.getRecordId());
+            System.out.println("Patient    : " + patientName + " (" + r.getPatientId() + ")");
+            System.out.println("Doctor     : " + doctorName + " (" + r.getDoctorId() + ")");
+            System.out.println("Date       : " + r.getDate());
+            System.out.println("Diagnosis  : " + r.getDiagnosis());
+            System.out.println("Treatment  : " + r.getTreatment());
+        }
+
+        System.out.println("--------------------------------------------------");
+
     }
 }

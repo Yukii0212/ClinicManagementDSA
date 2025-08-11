@@ -3,15 +3,15 @@ package clinic.boundary;
 import clinic.control.DoctorControl;
 import clinic.entity.Doctor;
 import static clinic.util.ConsoleUtil.*;
-
+import clinic.util.InputUtil;
 import java.util.Scanner;
 
 public class DoctorUI {
     private final DoctorControl control;
     private final Scanner sc = new Scanner(System.in);
 
-    public DoctorUI() {
-        control = new DoctorControl(20); // arbitrary capacity
+    public DoctorUI(DoctorControl control) {
+        this.control = control;
     }
 
     public void run() {
@@ -23,8 +23,7 @@ public class DoctorUI {
             System.out.println("2. View All Doctors");
             System.out.println("3. Search by Specialization");
             System.out.println("0. Back");
-            System.out.print("Enter choice: ");
-            choice = sc.nextInt();
+            choice = InputUtil.getInt(sc, "Enter choice: ");
             sc.nextLine();
 
             switch (choice) {
@@ -41,52 +40,82 @@ public class DoctorUI {
                     pause();
                 }
                 case 0 -> System.out.println("Returning to main menu...");
-                default -> System.out.println("Invalid.");
+                default -> {
+                    System.out.println("Invalid.");
+                    pause();
+                }
             }
         } while (choice != 0);
     }
 
     private void addDoctor() {
-        System.out.print("Doctor ID: ");
-        String id = sc.nextLine();
+        clearScreen();
+        System.out.println("Enter 'X' at any prompt to cancel.");
+
+        System.out.print("Identification Card (IC): ");
+        String ic = sc.nextLine();
+        if (ic.equalsIgnoreCase("X")) return;
+
         System.out.print("Name: ");
         String name = sc.nextLine();
+        if (name.equalsIgnoreCase("X")) return;
+
         System.out.print("Specialization: ");
         String spec = sc.nextLine();
+        if (spec.equalsIgnoreCase("X")) return;
+
         System.out.print("Duty Day: ");
         String duty = sc.nextLine();
+        if (duty.equalsIgnoreCase("X")) return;
+
         System.out.print("Shift (Morning/Evening): ");
         String shift = sc.nextLine();
+        if (shift.equalsIgnoreCase("X")) return;
 
-        Doctor d = new Doctor(id, name, spec, duty, shift);
-        if (control.addDoctor(d)) {
-            System.out.println("Doctor added.");
-        } else {
-            System.out.println("Capacity full.");
-        }
+        boolean ok = control.addDoctor(ic, name, spec, duty, shift);
+        System.out.println(ok ? "Doctor added successfully." : "Failed to add doctor (maybe IC exists or capacity full).");
     }
 
     private void showAll() {
+        clearScreen();
         Doctor[] docs = control.getAllDoctors();
         if (docs.length == 0) {
             System.out.println("No doctors available.");
-        } else {
-            for (Doctor d : docs) {
-                System.out.println(d);
-            }
+            return;
         }
+
+        System.out.println("=== List of Doctors ===");
+        for (Doctor d : docs) {
+            System.out.println("--------------------------------------------------");
+            System.out.println("ID          : " + d.getDoctorId());
+            System.out.println("IC          : " + d.getIdentificationCard());
+            System.out.println("Name        : " + d.getName());
+            System.out.println("Specializ.  : " + d.getSpecialization());
+            System.out.println("Duty Day    : " + d.getDutyDay());
+            System.out.println("Shift       : " + d.getShiftTime());
+        }
+        System.out.println("--------------------------------------------------");
     }
 
     private void searchSpecialization() {
+        clearScreen();
         System.out.print("Enter specialization: ");
         String spec = sc.nextLine();
         Doctor[] result = control.searchBySpecialization(spec);
         if (result.length == 0) {
             System.out.println("No doctors with that specialization.");
         } else {
+            System.out.println("=== Doctors with Specialization: " + spec + " ===");
             for (Doctor d : result) {
-                System.out.println(d);
+                System.out.println("--------------------------------------------------");
+                System.out.println("ID          : " + d.getDoctorId());
+                System.out.println("IC          : " + d.getIdentificationCard());
+                System.out.println("Name        : " + d.getName());
+                System.out.println("Specializ.  : " + d.getSpecialization());
+                System.out.println("Duty Day    : " + d.getDutyDay());
+                System.out.println("Shift       : " + d.getShiftTime());
             }
+            System.out.println("--------------------------------------------------");
         }
     }
 }

@@ -1,86 +1,101 @@
 package clinic.boundary;
 
 import clinic.control.ConsultationControl;
-import clinic.entity.Consultation;
-import clinic.entity.Patient;
+import clinic.control.DoctorControl;
+import clinic.control.PatientControl;
 import clinic.entity.Doctor;
+import clinic.entity.Patient;
 import static clinic.util.ConsoleUtil.*;
-
 import java.util.Scanner;
 
 public class ConsultationUI {
     private final ConsultationControl control;
+    private final PatientControl patientControl;
+    private final DoctorControl doctorControl;
     private final Scanner sc = new Scanner(System.in);
 
-    public ConsultationUI() {
-        control = new ConsultationControl(20); 
+    public ConsultationUI(ConsultationControl control, PatientControl patientControl, DoctorControl doctorControl) {
+        this.control = control;
+        this.patientControl = patientControl;
+        this.doctorControl = doctorControl;
     }
 
-    public void run(Patient[] patients, Doctor[] doctors) {
-        int choice;
-        do {
-            clearScreen();
-            System.out.println("\n--- Consultation Management ---");
-            System.out.println("1. Schedule Consultation");
-            System.out.println("2. View All Consultations");
-            System.out.println("0. Back");
-            System.out.print("Enter option: ");
-            choice = sc.nextInt(); sc.nextLine();
-
-            switch (choice) {
-                case 1 -> {
-                    schedule(patients, doctors);
-                    pause();
-                }
-                case 2 -> {
-                    viewAll();
-                    pause();
-                }
-                case 0 -> System.out.println("Back to main menu...");
-                default -> System.out.println("Invalid.");
-            }
-        } while (choice != 0);
-    }
-
-    private void schedule(Patient[] patients, Doctor[] doctors) {
-        if (patients.length == 0 || doctors.length == 0) {
-            System.out.println("Need at least 1 patient and 1 doctor.");
+    public void run() {
+        clearScreen();
+        if (patientControl.isQueueEmpty()) {
+            System.out.println("No patients in the queue to consult.");
+            pause();
             return;
         }
 
-        System.out.println("Select Patient:");
-        for (int i = 0; i < patients.length; i++) {
-            System.out.printf("%d. %s\n", i + 1, patients[i].getName());
+        Patient next = patientControl.peekNextPatient();
+        if (next == null) {
+            System.out.println("No available patient.");
+            pause();
+            return;
         }
-        int pIndex = sc.nextInt() - 1; sc.nextLine();
 
-        System.out.println("Select Doctor:");
+        System.out.println("=== Next Patient to be Consulted ===");
+        System.out.println("--------------------------------------------------");
+        System.out.println("ID       : " + next.getPatientId());
+        System.out.println("IC       : " + next.getIdentificationCard());
+        System.out.println("Name     : " + next.getName());
+        System.out.println("Age      : " + next.getAge());
+        System.out.println("Gender   : " + next.getGender());
+        System.out.println("Phone    : " + next.getPhone());
+        System.out.println("Illness  : " + next.getIllnessDescription());
+        System.out.println("--------------------------------------------------\n");
+
+        Doctor[] doctors = doctorControl.getAllDoctors();
+        if (doctors.length == 0) {
+            System.out.println("No doctors available. Add a doctor first.");
+            pause();
+            return;
+        }
+
+        System.out.println("=== Available Doctors ===");
         for (int i = 0; i < doctors.length; i++) {
-            System.out.printf("%d. %s (%s)\n", i + 1, doctors[i].getName(), doctors[i].getSpecialization());
+            Doctor d = doctors[i];
+            System.out.println("--------------------------------------------------");
+            System.out.println((i + 1) + ". Name     : " + d.getName());
+            System.out.println("   ID       : " + d.getDoctorId());
+            System.out.println("   IC       : " + d.getIdentificationCard());
+            System.out.println("   Special. : " + d.getSpecialization());
+            System.out.println("   Duty Day : " + d.getDutyDay());
+            System.out.println("   Shift    : " + d.getShiftTime());
         }
-        int dIndex = sc.nextInt() - 1; sc.nextLine();
+        System.out.println("--------------------------------------------------");
 
-        System.out.print("Consultation ID: ");
-        String id = sc.nextLine();
-        System.out.print("Date (YYYY-MM-DD): ");
-        String date = sc.nextLine();
-        System.out.print("Time: ");
-        String time = sc.nextLine();
-        System.out.print("Notes: ");
-        String notes = sc.nextLine();
+        System.out.println();
+        System.out.print("Select Doctor (or 'X' to cancel): ");
 
-        boolean ok = control.scheduleConsultation(id, patients[pIndex], doctors[dIndex], date, time, notes);
-        System.out.println(ok ? "Consultation scheduled." : "Schedule full.");
-    }
-
-    private void viewAll() {
-        Consultation[] all = control.getAllConsultations();
-        if (all.length == 0) {
-            System.out.println("No consultations scheduled.");
-        } else {
-            for (Consultation c : all) {
-                System.out.println("\n" + c);
-            }
+        String docInput = sc.nextLine();
+        if (docInput.equalsIgnoreCase("X")) return;
+        int docChoice;
+        try {
+            docChoice = Integer.parseInt(docInput) - 1;
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid doctor selection.");
+            pause();
+            return;
         }
+        if (docChoice < 0 || docChoice >= doctors.length) {
+            System.out.println("Invalid doctor selection.");
+            pause();
+            return;
+        }
+
+        Doctor doctor = doctors[docChoice];
+
+        System.out.print("Diagnosis (or 'X' to cancel): ");
+        String diagnosis = sc.nextLine();
+        if (diagnosis.equalsIgnoreCase("X")) return;
+
+        System.out.print("Treatment (or 'X' to cancel): ");
+        String treatment = sc.nextLine();
+        if (treatment.equalsIgnoreCase("X")) return;
+
+        control.consultNextPatient(doctor, diagnosis, treatment);
+        pause();
     }
 }
