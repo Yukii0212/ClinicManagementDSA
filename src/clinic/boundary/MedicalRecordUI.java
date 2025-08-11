@@ -79,10 +79,7 @@ public class MedicalRecordUI {
         }
 
         System.out.println("=== Medical Records ===");
-        System.out.printf("%-8s %-15s %-15s %-12s %-20s %-20s%n",
-                "Rec ID", "Patient", "Doctor", "Date", "Diagnosis", "Treatment");
-        System.out.println("-------------------------------------------------------------------------------------------");
-
+        
         for (MedicalRecord r : recs) {
             String patientName = "Unknown";
             String doctorName = "Unknown";
@@ -93,13 +90,16 @@ public class MedicalRecordUI {
             Doctor d = doctorControl.findById(r.getDoctorId());
             if (d != null) doctorName = d.getName();
 
-            System.out.printf("%-8s %-15s %-15s %-12s %-20s %-20s%n",
-                    r.getRecordId(),
-                    patientName + " (" + r.getPatientId() + ")",
-                    doctorName + " (" + r.getDoctorId() + ")",
-                    r.getDate(),
-                    r.getDiagnosis(),
-                    r.getTreatment());
+            System.out.println("--------------------------------------------------");
+            System.out.println("Rec ID     : " + r.getRecordId());
+            System.out.println("Patient    : " + patientName + " (" + r.getPatientId() + ")");
+            System.out.println("Doctor     : " + doctorName + " (" + r.getDoctorId() + ")");
+            System.out.println("Date       : " + r.getDate());
+            System.out.println("Diagnosis  : " + r.getDiagnosis());
+            System.out.println("Treatment  : " + r.getTreatment());
         }
+
+        System.out.println("--------------------------------------------------");
+
     }
 }

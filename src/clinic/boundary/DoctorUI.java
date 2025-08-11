@@ -83,18 +83,18 @@ public class DoctorUI {
             System.out.println("No doctors available.");
             return;
         }
-        System.out.printf("%-5s %-15s %-20s %-20s %-12s %-10s%n",
-                "ID", "IC", "Name", "Specialization", "Duty Day", "Shift");
-        System.out.println("-------------------------------------------------------------------------------------");
+
+        System.out.println("=== List of Doctors ===");
         for (Doctor d : docs) {
-            System.out.printf("%-5s %-15s %-20s %-20s %-12s %-10s%n",
-                    d.getDoctorId(),
-                    d.getIdentificationCard(),
-                    d.getName(),
-                    d.getSpecialization(),
-                    d.getDutyDay(),
-                    d.getShiftTime());
+            System.out.println("--------------------------------------------------");
+            System.out.println("ID          : " + d.getDoctorId());
+            System.out.println("IC          : " + d.getIdentificationCard());
+            System.out.println("Name        : " + d.getName());
+            System.out.println("Specializ.  : " + d.getSpecialization());
+            System.out.println("Duty Day    : " + d.getDutyDay());
+            System.out.println("Shift       : " + d.getShiftTime());
         }
+        System.out.println("--------------------------------------------------");
     }
 
     private void searchSpecialization() {
@@ -105,7 +105,17 @@ public class DoctorUI {
         if (result.length == 0) {
             System.out.println("No doctors with that specialization.");
         } else {
-            for (Doctor d : result) System.out.println(d);
+            System.out.println("=== Doctors with Specialization: " + spec + " ===");
+            for (Doctor d : result) {
+                System.out.println("--------------------------------------------------");
+                System.out.println("ID          : " + d.getDoctorId());
+                System.out.println("IC          : " + d.getIdentificationCard());
+                System.out.println("Name        : " + d.getName());
+                System.out.println("Specializ.  : " + d.getSpecialization());
+                System.out.println("Duty Day    : " + d.getDutyDay());
+                System.out.println("Shift       : " + d.getShiftTime());
+            }
+            System.out.println("--------------------------------------------------");
         }
     }
 }

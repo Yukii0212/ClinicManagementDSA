@@ -74,22 +74,19 @@ public class PatientUI {
             System.out.println("No patients in queue.");
             return;
         }
-        System.out.println("Patients in queue:");
-        System.out.printf("%-5s %-15s %-20s %-3s %-6s %-12s %s%n",
-                "ID", "IC", "Name", "Age", "Gender", "Phone", "Illness");
-        System.out.println("-------------------------------------------------------------------------------------");
+        System.out.println("=== Patients in Queue ===");
         for (Patient p : list) {
-            System.out.printf("%-5s %-15s %-20s %-3d %-6s %-12s %s%n",
-                    p.getPatientId(),
-                    p.getIdentificationCard(),
-                    p.getName(),
-                    p.getAge(),
-                    p.getGender(),
-                    p.getPhone(),
-                    p.getIllnessDescription());
+            System.out.println("--------------------------------------------------");
+            System.out.println("ID       : " + p.getPatientId());
+            System.out.println("IC       : " + p.getIdentificationCard());
+            System.out.println("Name     : " + p.getName());
+            System.out.println("Age      : " + p.getAge());
+            System.out.println("Gender   : " + p.getGender());
+            System.out.println("Phone    : " + p.getPhone());
+            System.out.println("Illness  : " + p.getIllnessDescription());
         }
+        System.out.println("--------------------------------------------------");
     }
-
 
     private void viewPreviouslyRegistered() {
         clearScreen();
@@ -98,19 +95,17 @@ public class PatientUI {
             System.out.println("No patients registered yet.");
             return;
         }
-        System.out.println("Previously registered patients:");
-        System.out.printf("%-5s %-15s %-20s %-3s %-6s %-12s %s%n",
-                "ID", "IC", "Name", "Age", "Gender", "Phone", "Illness");
-        System.out.println("-------------------------------------------------------------------------------------");
+        System.out.println("=== Previously Registered Patients ===");
         for (Patient p : allPatients) {
-            System.out.printf("%-5s %-15s %-20s %-3d %-6s %-12s %s%n",
-                    p.getPatientId(),
-                    p.getIdentificationCard(),
-                    p.getName(),
-                    p.getAge(),
-                    p.getGender(),
-                    p.getPhone(),
-                    p.getIllnessDescription());
+            System.out.println("--------------------------------------------------");
+            System.out.println("ID       : " + p.getPatientId());
+            System.out.println("IC       : " + p.getIdentificationCard());
+            System.out.println("Name     : " + p.getName());
+            System.out.println("Age      : " + p.getAge());
+            System.out.println("Gender   : " + p.getGender());
+            System.out.println("Phone    : " + p.getPhone());
+            System.out.println("Illness  : " + p.getIllnessDescription());
         }
+        System.out.println("--------------------------------------------------");
     }
 }

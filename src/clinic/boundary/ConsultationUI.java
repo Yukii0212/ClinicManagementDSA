@@ -35,9 +35,16 @@ public class ConsultationUI {
             return;
         }
 
-        System.out.println("Next patient to be consulted:");
-        System.out.println(next);
-        System.out.println();
+        System.out.println("=== Next Patient to be Consulted ===");
+        System.out.println("--------------------------------------------------");
+        System.out.println("ID       : " + next.getPatientId());
+        System.out.println("IC       : " + next.getIdentificationCard());
+        System.out.println("Name     : " + next.getName());
+        System.out.println("Age      : " + next.getAge());
+        System.out.println("Gender   : " + next.getGender());
+        System.out.println("Phone    : " + next.getPhone());
+        System.out.println("Illness  : " + next.getIllnessDescription());
+        System.out.println("--------------------------------------------------\n");
 
         Doctor[] doctors = doctorControl.getAllDoctors();
         if (doctors.length == 0) {
@@ -46,13 +53,21 @@ public class ConsultationUI {
             return;
         }
 
-        System.out.println("List of Doctors:");
+        System.out.println("=== Available Doctors ===");
         for (int i = 0; i < doctors.length; i++) {
-            System.out.printf("%d. %s (%s)\n", i + 1, doctors[i].getName(), doctors[i].getDoctorId());
+            Doctor d = doctors[i];
+            System.out.println("--------------------------------------------------");
+            System.out.println((i + 1) + ". Name     : " + d.getName());
+            System.out.println("   ID       : " + d.getDoctorId());
+            System.out.println("   IC       : " + d.getIdentificationCard());
+            System.out.println("   Special. : " + d.getSpecialization());
+            System.out.println("   Duty Day : " + d.getDutyDay());
+            System.out.println("   Shift    : " + d.getShiftTime());
         }
+        System.out.println("--------------------------------------------------");
 
         System.out.println();
-        System.out.print("Select Doctor (or 'X' to cancel):");
+        System.out.print("Select Doctor (or 'X' to cancel): ");
 
         String docInput = sc.nextLine();
         if (docInput.equalsIgnoreCase("X")) return;
@@ -69,7 +84,6 @@ public class ConsultationUI {
             pause();
             return;
         }
-
 
         Doctor doctor = doctors[docChoice];
 
