@@ -110,7 +110,7 @@ public class PatientControl {
         return patientQueue.isEmpty();
     }
 
-    private boolean isInQueue(String patientId) {
+    public boolean isInQueue(String patientId) {
         Patient[] queued = getAllPatients(); 
         for (Patient q : queued) {
             if (q.getPatientId().equalsIgnoreCase(patientId)) return true;

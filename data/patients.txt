@@ -3,3 +3,4 @@ P002,81348842,Vincent,34,M,-,Lazy
 P003,012312323,Wesley Lo Jun Yang,97,Male,123,Lazy
 P004,03123123,Rachel Lu Khai En,16,Female,1231,Flu with high temperatures
 P005,000212120856,Liew Wei Wei,24,Female,0123,Cute
+P006,012312312,Elisha Liew,20,Female,017812321,Two people combined in one

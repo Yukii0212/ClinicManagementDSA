@@ -48,15 +48,14 @@ public class PatientUI {
 
         Patient selectedPatient = null;
 
-        if (selectedPatient == null && searchInput.matches(REGEX_CONTAINS_NUMBER)) {
-            System.out.println("No patient found with IC: " + searchInput);
-        }
-
         if (searchInput.matches(REGEX_CONTAINS_NUMBER)) {
             selectedPatient = controller.searchByIC(searchInput);
+            if (selectedPatient == null) {
+                System.out.println("No patient found with IC: " + searchInput);
+            }
         } else {
             selectedPatient = handleNameSearch(searchInput);
-            if (selectedPatient == null && nameSearchCancelled) return;
+            if (nameSearchCancelled) return; 
         }
 
         if (selectedPatient != null) {
@@ -67,11 +66,12 @@ public class PatientUI {
         handleNewPatientRegistration(searchInput);
     }
 
+
     private Patient handleNameSearch(String namePart) {
         Patient[] matches = controller.searchByNamePartial(namePart);
         if (matches.length == 0) {
             System.out.println("No patient found with name containing: " + namePart);
-            return null;
+            return null; 
         }
 
         clearScreen();
@@ -92,13 +92,14 @@ public class PatientUI {
             System.out.print("Select patient number: ");
             String choiceInput = sc.nextLine().trim();
             if (choiceInput.equalsIgnoreCase("X") || choiceInput.equals("-1")) {
-                nameSearchCancelled = true;
+                nameSearchCancelled = true; 
                 return null;
             }
             try {
                 int choice = Integer.parseInt(choiceInput);
                 if (choice == 0) {
-                    return null; // new patient
+                    nameSearchCancelled = false; 
+                    return null;
                 }
                 if (choice > 0 && choice <= matches.length) {
                     return matches[choice - 1];
@@ -109,6 +110,12 @@ public class PatientUI {
     }
 
     private void handleRequeue(Patient selectedPatient) {
+        if (controller.isInQueue(selectedPatient.getPatientId())) {
+            System.out.println("This patient is already in the queue. Cannot re-add.");
+            pause();
+            return;
+        }
+
         System.out.println("\nSelected patient:");
         System.out.println(selectedPatient);
         System.out.print("Enter new illness description (or 'X' to cancel): ");
@@ -126,8 +133,9 @@ public class PatientUI {
         );
 
         boolean reQueued = controller.enqueueExisting(updatedPatient);
-        System.out.println(reQueued ? "Patient re-added to queue successfully."
-                : "Failed to re-add patient (maybe already in queue or queue full).");
+        System.out.println(reQueued
+                ? "Patient re-added to queue successfully."
+                : "Failed to re-add patient (queue might be full).");
         pause();
     }
 
