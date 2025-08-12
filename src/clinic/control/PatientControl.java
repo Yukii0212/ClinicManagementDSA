@@ -146,6 +146,23 @@ public class PatientControl {
         return result;
     }
 
+    public Patient[] searchByNamePartial(String namePart) {
+        String[] lines = FileUtil.readLines(FILE_PATH);
+        Patient[] temp = new Patient[lines.length];
+        int idx = 0;
+        for (String line : lines) {
+            String[] parts = line.split(",");
+            if (parts.length >= 3 && parts[2].toLowerCase().contains(namePart.toLowerCase())) {
+                temp[idx++] = new Patient(parts[0], parts[1], parts[2],
+                        Integer.parseInt(parts[3]), parts[4], parts[5], parts[6]);
+            }
+        }
+        Patient[] result = new Patient[idx];
+        System.arraycopy(temp, 0, result, 0, idx);
+        return result;
+    }
+
+
     public Patient findById(String patientId) {
         String[] lines = clinic.util.FileUtil.readLines(FILE_PATH);
         for (String line : lines) {

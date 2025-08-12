@@ -9,6 +9,8 @@ import java.util.Scanner;
 public class PatientUI {
     private final PatientControl controller;
     private final Scanner sc = new Scanner(System.in);
+    private boolean nameSearchCancelled = false;
+    private static final String REGEX_CONTAINS_NUMBER = ".*\\d.*";
 
     public PatientUI(PatientControl controller) {
         this.controller = controller;
@@ -39,100 +41,117 @@ public class PatientUI {
 
     private void registerPatient() {
         clearScreen();
-        System.out.println("--- Register / Re-Enqueue Patient ---");
-        System.out.println("1. Register new patient");
-        System.out.println("2. Search and re-add existing patient to queue");
-        System.out.print("Select option (or 'X' to cancel): ");
-        String choiceInput = sc.nextLine();
-        if (choiceInput.equalsIgnoreCase("X")) return;
-
-        int choice;
-        try {
-            choice = Integer.parseInt(choiceInput);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid choice.");
-            pause();
-            return;
-        }
-
-        if (choice == 2) {
-            // Search existing patients
-            System.out.print("Search by (1) IC or (2) Name: ");
-            String searchInput = sc.nextLine();
-            if (searchInput.equalsIgnoreCase("X")) return;
-
-            int searchChoice;
-            try {
-                searchChoice = Integer.parseInt(searchInput);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid choice.");
-                pause();
-                return;
-            }
-
-            Patient found = null;
-
-            if (searchChoice == 1) {
-                System.out.print("Enter IC: ");
-                String icSearch = sc.nextLine();
-                if (icSearch.equalsIgnoreCase("X")) return;
-                found = controller.searchByIC(icSearch);
-
-            } else if (searchChoice == 2) {
-                System.out.print("Enter Name: ");
-                String nameSearch = sc.nextLine();
-                if (nameSearch.equalsIgnoreCase("X")) return;
-
-                Patient[] matches = controller.searchByName(nameSearch);
-                if (matches.length == 0) {
-                    System.out.println("No matching patient found.");
-                    pause();
-                    return;
-                } else if (matches.length > 1) {
-                    System.out.println("Multiple matches found:");
-                    for (int i = 0; i < matches.length; i++) {
-                        System.out.printf("%d. %s (IC: %s, ID: %s)\n",
-                                i + 1, matches[i].getName(),
-                                matches[i].getIdentificationCard(),
-                                matches[i].getPatientId());
-                    }
-                    int pick = InputUtil.getInt(sc, "Select: ") - 1;
-                    sc.nextLine();
-                    if (pick >= 0 && pick < matches.length) {
-                        found = matches[pick];
-                    }
-                } else {
-                    found = matches[0];
-                }
-            }
-
-            if (found != null) {
-                System.out.println("Patient found:");
-                System.out.println(found);
-                System.out.print("Add to queue? (Y/N): ");
-                String confirm = sc.nextLine();
-                if (confirm.equalsIgnoreCase("Y")) {
-                    boolean ok = controller.enqueueExisting(found);
-                    System.out.println(ok ? "Added to queue." : "Patient already in queue or queue full.");
-                }
-            } else {
-                System.out.println("No matching patient found.");
-            }
-            pause();
-            return;
-        }
-
-        if (choice != 1) {
-            System.out.println("Invalid choice.");
-            pause();
-            return;
-        }
-
-        // Original NEW patient registration flow
         System.out.println("Enter 'X' at any prompt to cancel.");
-        System.out.print("Identification Card (IC): ");
-        String ic = sc.nextLine();
-        if (ic.equalsIgnoreCase("X")) return;
+        System.out.print("Identification Card (IC) or Name: ");
+        String searchInput = sc.nextLine().trim();
+        if (searchInput.equalsIgnoreCase("X")) return;
+
+        Patient selectedPatient = null;
+
+        if (selectedPatient == null && searchInput.matches(REGEX_CONTAINS_NUMBER)) {
+            System.out.println("No patient found with IC: " + searchInput);
+        }
+
+        if (searchInput.matches(REGEX_CONTAINS_NUMBER)) {
+            selectedPatient = controller.searchByIC(searchInput);
+        } else {
+            selectedPatient = handleNameSearch(searchInput);
+            if (selectedPatient == null && nameSearchCancelled) return;
+        }
+
+        if (selectedPatient != null) {
+            handleRequeue(selectedPatient);
+            return;
+        }
+
+        handleNewPatientRegistration(searchInput);
+    }
+
+    private Patient handleNameSearch(String namePart) {
+        Patient[] matches = controller.searchByNamePartial(namePart);
+        if (matches.length == 0) {
+            System.out.println("No patient found with name containing: " + namePart);
+            return null;
+        }
+
+        clearScreen();
+        System.out.println("Multiple matches found:");
+        System.out.println("0. Register new patient");
+        for (int i = 0; i < matches.length; i++) {
+            System.out.printf("%d. %s (IC: %s) - ID: %s%n",
+                    i + 1,
+                    matches[i].getName(),
+                    matches[i].getIdentificationCard(),
+                    matches[i].getPatientId());
+        }
+        System.out.println();
+        System.out.println("X or -1. Cancel/Exit");
+        System.out.println();
+
+        while (true) {
+            System.out.print("Select patient number: ");
+            String choiceInput = sc.nextLine().trim();
+            if (choiceInput.equalsIgnoreCase("X") || choiceInput.equals("-1")) {
+                nameSearchCancelled = true;
+                return null;
+            }
+            try {
+                int choice = Integer.parseInt(choiceInput);
+                if (choice == 0) {
+                    return null; // new patient
+                }
+                if (choice > 0 && choice <= matches.length) {
+                    return matches[choice - 1];
+                }
+            } catch (NumberFormatException ignored) {}
+            System.out.println("Invalid input. Try again.");
+        }
+    }
+
+    private void handleRequeue(Patient selectedPatient) {
+        System.out.println("\nSelected patient:");
+        System.out.println(selectedPatient);
+        System.out.print("Enter new illness description (or 'X' to cancel): ");
+        String newIllness = sc.nextLine();
+        if (newIllness.equalsIgnoreCase("X")) return;
+
+        Patient updatedPatient = new Patient(
+                selectedPatient.getPatientId(),
+                selectedPatient.getIdentificationCard(),
+                selectedPatient.getName(),
+                selectedPatient.getAge(),
+                selectedPatient.getGender(),
+                selectedPatient.getPhone(),
+                newIllness
+        );
+
+        boolean reQueued = controller.enqueueExisting(updatedPatient);
+        System.out.println(reQueued ? "Patient re-added to queue successfully."
+                : "Failed to re-add patient (maybe already in queue or queue full).");
+        pause();
+    }
+
+    private void handleNewPatientRegistration(String searchInput) {
+        clearScreen();
+        System.out.println("=== REGISTER NEW MEMBER ===");
+
+        String icForNew;
+        if (searchInput.matches(REGEX_CONTAINS_NUMBER)) {
+            System.out.print("Use \"" + searchInput + "\" as Identification Card (IC)? (Y/n or 'X' to cancel): ");
+            String use = sc.nextLine().trim();
+            if (use.equalsIgnoreCase("X")) return;
+            if (use.equalsIgnoreCase("n")) {
+                System.out.print("Identification Card (IC): ");
+                icForNew = sc.nextLine().trim();
+                if (icForNew.equalsIgnoreCase("X")) return;
+            } else {
+                icForNew = searchInput;
+            }
+        } else {
+            System.out.print("Identification Card (IC): ");
+            icForNew = sc.nextLine().trim();
+            if (icForNew.equalsIgnoreCase("X")) return;
+        }
 
         System.out.print("Name: ");
         String name = sc.nextLine();
@@ -153,10 +172,10 @@ public class PatientUI {
         String illness = sc.nextLine();
         if (illness.equalsIgnoreCase("X")) return;
 
-        boolean ok = controller.addPatient(ic, name, age, gender, phone, illness);
-        System.out.println(ok ? "Patient registered successfully." : "Failed to register patient (maybe queue full or IC exists).");
+        boolean ok = controller.addPatient(icForNew, name, age, gender, phone, illness);
+        System.out.println(ok ? "Patient registered successfully and added to queue."
+                : "Failed to register patient (maybe queue full or IC exists).");
     }
-
 
     private void viewQueue() {
         clearScreen();
