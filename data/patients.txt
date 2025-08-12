@@ -1,1 +1,4 @@
 P001,000000-12-1212,Elisha Tiong Pei Pei,20,Female,232323,Lazy
+P002,81348842,Vincent,34,M,-,Lazy
+P003,012312323,Wesley Lo Jun Yang,97,Male,123,Lazy
+P004,03123123,Rachel Lu Khai En,16,Female,1231,Flu with high temperatures

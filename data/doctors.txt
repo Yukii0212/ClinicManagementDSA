@@ -1,2 +1,4 @@
 D001,000212-12-0857,Dr Douglas,Eyes,Monday,Morning
 D002,0123123213,Dr Jefther,Nose,Thursday,Morning
+D003,174723742374,James,Brain,Weekdays,Morning
+D004,020212120512,Amy,Hair,Monday, Wednesday, Friday, Saturday,Morning
