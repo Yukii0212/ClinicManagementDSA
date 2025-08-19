@@ -30,7 +30,7 @@ public class MedicalRecordUI {
             System.out.println("1. Add Record (manual)");
             System.out.println("2. View All Records");
             System.out.println("3. View Processing Queue");
-            System.out.println("4. Process Next Record (FIFO)");
+            System.out.println("4. Process Next Record");
             System.out.println("0. Back");
             choice = InputUtil.getInt(sc, "Enter option: ");
             sc.nextLine();
@@ -113,7 +113,7 @@ public class MedicalRecordUI {
             return;
         }
 
-        System.out.println("=== Record Processing Queue (FIFO) ===");
+        System.out.println("=== Record Processing Queue ===");
         System.out.println("NEXT TO PROCESS → " + queue[0].getRecordId() + " (" + queue[0].getDate() + ")");
         for (int i = 1; i < queue.length; i++) {
             System.out.println((i) + ". " + queue[i].getRecordId() + " (" + queue[i].getDate() + ")");
@@ -122,7 +122,7 @@ public class MedicalRecordUI {
 
     private void processNext() {
         clearScreen();
-        MedicalRecord next = control.peekNextRecord(); // look at front without removing
+        MedicalRecord next = control.peekNextRecord(); 
         if (next == null) {
             System.out.println("No records available to process.");
             return;

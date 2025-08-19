@@ -147,15 +147,13 @@ public class DoctorUI {
             return;
         }
 
-        System.out.println("=== Emergency Doctor Queue (FIFO) ===");
+        System.out.println("=== Emergency Doctor Queue ===");
 
-        // Show the first doctor as CURRENT
         System.out.println("CURRENTLY HANDLING EMERGENCY → " 
                         + docs[0].getName() 
                         + " (" + docs[0].getSpecialization() + ")");
 
         if (docs.length > 1) {
-            // Show the second doctor as NEXT
             System.out.println("NEXT IN LINE → " 
                             + docs[1].getName() 
                             + " (" + docs[1].getSpecialization() + ")");
