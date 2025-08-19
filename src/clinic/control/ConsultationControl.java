@@ -20,7 +20,8 @@ public class ConsultationControl {
             return;
         }
         String today = LocalDate.now().toString();
-        medicalRecordControl.addRecord(
+
+        boolean ok = medicalRecordControl.enqueuePendingRecord(
                 p.getPatientId(),
                 doctor.getDoctorId(),
                 today,
@@ -28,8 +29,12 @@ public class ConsultationControl {
                 treatment
         );
 
-        patientControl.removeFromQueueFile(p.getPatientId());
+        if (!ok) {
+            System.out.println("Failed to queue medical record (queue full).");
+            return;
+        }
 
-        System.out.println("Consultation recorded for patient: " + p.getName());
+        patientControl.removeFromQueueFile(p.getPatientId());
+        System.out.println("Consultation completed and record queued for processing: " + p.getName());
     }
 }

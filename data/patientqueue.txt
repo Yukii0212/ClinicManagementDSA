@@ -1,2 +1,0 @@
-P001,000000-12-1212,Elisha Tiong Pei Pei,20,Female,232323,smart
-P006,012312312,Elisha Liew,20,Female,017812321,Two people combined in one

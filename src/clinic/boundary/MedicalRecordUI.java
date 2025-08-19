@@ -29,6 +29,8 @@ public class MedicalRecordUI {
             System.out.println("\n--- Medical Record Management ---");
             System.out.println("1. Add Record (manual)");
             System.out.println("2. View All Records");
+            System.out.println("3. View Processing Queue");
+            System.out.println("4. Process Next Record (FIFO)");
             System.out.println("0. Back");
             choice = InputUtil.getInt(sc, "Enter option: ");
             sc.nextLine();
@@ -36,6 +38,8 @@ public class MedicalRecordUI {
             switch (choice) {
                 case 1 -> { addRecord(); pause(); }
                 case 2 -> { viewAll(); pause(); }
+                case 3 -> { viewQueue(); pause(); }
+                case 4 -> { processNext(); pause(); }
                 case 0 -> System.out.println("Returning to main..."); 
                 default -> { System.out.println("Invalid."); pause(); }
             }
@@ -98,8 +102,49 @@ public class MedicalRecordUI {
             System.out.println("Diagnosis  : " + r.getDiagnosis());
             System.out.println("Treatment  : " + r.getTreatment());
         }
-
         System.out.println("--------------------------------------------------");
-
     }
+
+    private void viewQueue() {
+        clearScreen();
+        MedicalRecord[] queue = control.getQueueSnapshot();
+        if (queue.length == 0) {
+            System.out.println("No records in processing queue.");
+            return;
+        }
+
+        System.out.println("=== Record Processing Queue (FIFO) ===");
+        System.out.println("NEXT TO PROCESS → " + queue[0].getRecordId() + " (" + queue[0].getDate() + ")");
+        for (int i = 1; i < queue.length; i++) {
+            System.out.println((i) + ". " + queue[i].getRecordId() + " (" + queue[i].getDate() + ")");
+        }
+    }
+
+    private void processNext() {
+        clearScreen();
+        MedicalRecord next = control.peekNextRecord(); // look at front without removing
+        if (next == null) {
+            System.out.println("No records available to process.");
+            return;
+        }
+
+        System.out.println("Next record in queue:");
+        System.out.println("Rec ID   : " + next.getRecordId());
+        System.out.println("Patient  : " + next.getPatientId());
+        System.out.println("Doctor   : " + next.getDoctorId());
+        System.out.println("Date     : " + next.getDate());
+        System.out.println("Diagnosis: " + next.getDiagnosis());
+        System.out.println("Treatment: " + next.getTreatment());
+
+        System.out.print("\nConfirm process this record? (Y/N): ");
+        String confirm = sc.nextLine();
+        if (!confirm.equalsIgnoreCase("Y")) {
+            System.out.println("Cancelled.");
+            return;
+        }
+
+        MedicalRecord r = control.processNextRecord();
+        System.out.println("Processed and saved record " + r.getRecordId() + " successfully.");
+    }
+
 }
