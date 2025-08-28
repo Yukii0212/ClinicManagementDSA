@@ -1,9 +1,9 @@
 MR001,P001,D002,2025-08-11,Very lazy,Work harder
-MR002,P002,D001,2025-08-12,Lazy,Study
-MR003,P002,D002,2025-08-12,Super lazy,Rest
-MR004,P003,D001,2025-08-12,s,s
-MR005,P004,D001,2025-08-12,s,s
-MR006,P005,D003,2025-08-12,s,s
-MR007,P001,D001,2025-08-19,test,tes
-MR008,P006,D003,2025-08-19,test,teststet
-MR009,P005,D002,2025-08-19,Too cute,Become cuter
+MR002,P002,D001,2025-08-12,Carpal Tunnel,Use ergonomic keyboard
+MR003,P002,D002,2025-08-12,Did not get A for assignment,Study harder
+MR004,P003,D001,2025-08-12,Flu,Take medicine
+MR005,P004,D001,2025-08-12,Fever,Paracetamol
+MR006,P005,D003,2025-08-12,Pneumonoultramicroscopicsilicovolcanoconiosis,Refer to a lung doctor
+MR007,P001,D001,2025-08-19,Lethargic,Red bull
+MR008,P006,D003,2025-08-19,Sleepy,Get more sleep
+MR009,P005,D002,2025-08-19,Always tired,Get more supplements
