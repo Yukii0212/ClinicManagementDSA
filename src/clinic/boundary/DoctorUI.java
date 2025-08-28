@@ -135,7 +135,7 @@ public class DoctorUI {
         if (d == null) {
             System.out.println("No doctors available in the emergency queue.");
         } else {
-            System.out.println("Doctor " + d.getName() + " (" + d.getSpecialization() + ") is now handling an emergency!");
+            System.out.println("New doctor is now handling emergencies!");
         }
     }
 
